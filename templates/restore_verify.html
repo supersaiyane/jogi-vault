@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; Restore{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="cw" style="min-height:calc(100vh - 56px)"><div class="box">
+{% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+<div class="card">
+<h2 style="color:var(--yellow)">Enter verification code</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.4rem">A 6-digit code was sent to <strong>{{ email }}</strong>. Enter it below to confirm the restore.</p>
+<form method="post" action="/backup/restore-confirm">
+{{ csrf_field() | safe }}
+<div class="fr"><label>Verification code</label>
+<input type="text" name="code" autofocus maxlength="6" inputmode="numeric" placeholder="000000" class="ci"></div>
+<div style="display:flex;gap:.8rem;margin-top:.5rem">
+<button class="btn bp">Restore Backup</button>
+<a class="btn bg" href="/backup">Cancel</a>
+</div></form>
+</div></div></div>
+{% endblock %}

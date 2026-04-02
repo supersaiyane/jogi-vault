@@ -3,11 +3,11 @@
 Jogi Vault — Google Drive Backup Manager
 
 Handles:
-  • Google Drive OAuth2 (client credentials stored outside vault.enc
+  - Google Drive OAuth2 (client credentials stored outside vault.enc
     so emergency restore works even if vault is corrupted)
-  • Auto-backup vault/data/ on a configurable interval via APScheduler
-  • Restore from Drive backup with email verification
-  • Gmail SMTP for verification codes
+  - Auto-backup vault/data/ on a configurable interval via APScheduler
+  - Restore from Drive backup with email verification
+  - Gmail SMTP for verification codes
 
 Vault keys stored (__ prefix = hidden from list_keys):
   __backup_enabled__           "true" / "false"
@@ -310,6 +310,13 @@ class BackupManager:
     def _unzip(data: bytes) -> None:
         VAULT_DIR.mkdir(exist_ok=True)
         with zipfile.ZipFile(io.BytesIO(data)) as zf:
+            vault_root = VAULT_DIR.resolve()
+            for info in zf.infolist():
+                target = (VAULT_DIR / info.filename).resolve()
+                if not target.is_relative_to(vault_root):
+                    raise BackupError(
+                        "Unsafe path in backup archive: {}".format(info.filename)
+                    )
             zf.extractall(VAULT_DIR)
 
     @staticmethod

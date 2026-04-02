@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; Backup{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="page">{{ pop_msgs() | safe }}
+<div class="topbar"><h1>Backup</h1>
+<div style="display:flex;gap:.8rem">{{ backup_now_btn | safe }}</div>
+</div>
+
+{# ── Google Drive card ── #}
+<div class="card">
+<h2>Google Drive {{ drive_badge | safe }}</h2>
+{% if gdrive_connected %}
+<div class="stat-row"><span class="stat-label">Status</span><span class="stat-val">Connected &mdash; backups uploading to JogiVault-Backups folder</span></div>
+<form method="post" action="/backup/gdrive/disconnect" style="margin-top:1.2rem">
+{{ csrf_field() | safe }}
+<button class="btn bd bs">Disconnect Drive</button>
+</form>
+{% else %}
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.2rem">Connect your Google Drive to enable cloud backups. You need a Google OAuth client ID and secret (<a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--accent)">create one here</a> with Drive API enabled, redirect URI: <code style="color:var(--accent-soft)">http://localhost:5111/backup/gdrive/callback</code>).</p>
+<form method="post" action="/backup/oauth-config">
+{{ csrf_field() | safe }}
+<div class="row2">
+<div class="fr"><label>Google Client ID</label>
+<input type="text" name="client_id" value="{{ client_id }}" placeholder="xxxxxxxx.apps.googleusercontent.com"></div>
+<div class="fr"><label>Google Client Secret</label>
+<input type="password" name="client_secret" placeholder="GOCSPX-..."></div>
+</div>
+<div style="display:flex;gap:.8rem">
+<button class="btn bg">Save OAuth Config</button>
+{% if oauth_configured %}
+<a class="btn bp" href="/backup/gdrive/connect">Connect Google Drive &rarr;</a>
+{% endif %}
+</div>
+</form>
+{% endif %}
+</div>
+
+{# ── Email card ── #}
+<div class="card">
+<h2>Email Verification {{ email_badge | safe }}</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.2rem">Used to verify your identity before restoring a backup. Use a <a href="https://myaccount.google.com/apppasswords" target="_blank" style="color:var(--accent)">Gmail App Password</a> &mdash; not your real Gmail password.</p>
+<form method="post" action="/backup/email-config">
+{{ csrf_field() | safe }}
+<div class="row2">
+<div class="fr"><label>Gmail address</label>
+<input type="text" name="email" value="{{ email }}" placeholder="you@gmail.com"></div>
+<div class="fr"><label>Gmail App Password</label>
+<input type="password" name="smtp" placeholder="xxxx xxxx xxxx xxxx"></div>
+</div>
+<button class="btn bg">Save Email Config</button>
+</form>
+</div>
+
+{# ── Schedule card ── #}
+<div class="card">
+<h2>Auto-Backup Schedule {{ sched_badge | safe }}</h2>
+<form method="post" action="/backup/schedule">
+{{ csrf_field() | safe }}
+<div class="row2">
+<div class="fr"><label>Frequency</label>
+<select name="frequency">{{ freq_opts | safe }}</select>
+</div>
+<div class="fr"><label>Last backup</label>
+<input type="text" value="{{ last_run_str }}" readonly style="color:var(--text-muted)">
+</div>
+</div>
+<div class="fr" style="display:flex;align-items:center;gap:.8rem;margin-bottom:.5rem">
+<input type="checkbox" name="enabled" id="enb" style="width:auto" {{ 'checked' if enabled else '' }}>
+<label for="enb" style="margin:0;color:#e2e2f0;font-size:.9rem">Enable automatic backups</label>
+</div>
+<button class="btn bg">Save Schedule</button>
+</form>
+</div>
+
+{# ── Backup history card ── #}
+<div class="card">
+<h2>Backup History</h2>
+{{ history_html | safe }}
+</div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+# Vault data — mounted as volume, never baked in
+data/
+
+# Documentation — not needed at runtime
+*.txt
+*.md
+wiki/
+
+# Dev files
+.git/
+.gitignore
+.DS_Store
+Makefile
+cli.py
+docker-compose.yml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/

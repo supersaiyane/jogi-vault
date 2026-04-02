@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; API{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="page">{{ pop_msgs() | safe }}
+<div class="topbar"><h1>API &amp; Namespaces</h1></div>
+
+{# ── Machine token card ── #}
+<div class="card">
+<h2>Machine Token
+{% if machine_active %}<span class="badge badge-ok">Active</span>
+{% else %}<span class="badge badge-err">Not generated</span>{% endif %}
+</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.2rem">A machine token (<code>VLT-&hellip;</code>) hides your real password behind a derived key. Put it in <code>VAULT_PASSWORD=VLT-&hellip;</code> in docker-compose, <code>.env</code>, or CI/CD. Even if someone reads that file, they cannot derive your master password &mdash; and without <code>vault/data/vault.token</code> the token is useless.</p>
+<div class="stat-row"><span class="stat-label">Status</span>
+<span class="stat-val">
+{% if machine_active %}Active &mdash; VLT-&hellip; token can unlock the vault
+{% else %}No token issued yet{% endif %}
+</span></div>
+<div style="display:flex;gap:.8rem;margin-top:1.2rem">
+<form method="post" action="/api-settings/machine-token">
+{{ csrf_field() | safe }}
+<button class="btn {% if machine_active %}bg{% else %}bp{% endif %}">
+{% if machine_active %}Rotate Token{% else %}Generate Machine Token{% endif %}
+</button>
+</form>
+{% if machine_active %}
+<form method="post" action="/api-settings/machine-token/revoke">
+{{ csrf_field() | safe }}
+<button class="btn bd">Revoke</button>
+</form>
+{% endif %}
+</div>
+</div>
+
+{# ── API token card ── #}
+<div class="card">
+<h2>REST API Token</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.2rem">Use this token to read secrets from your code without loading everything into env vars. The vault must be unlocked (UI login or <code>VAULT_PASSWORD</code> env var).</p>
+{% if token %}
+<div class="stat-row"><span class="stat-label">Token</span>
+<span class="stat-val" style="font-size:.78rem">{{ token_display }}</span></div>
+<div class="stat-row"><span class="stat-label">Base URL</span>
+<span class="stat-val">{{ base }}/api/v1</span></div>
+{% endif %}
+<form method="post" action="/api-settings/generate" style="margin-top:1.2rem">
+{{ csrf_field() | safe }}
+<button class="btn {% if token %}bg{% else %}bp{% endif %}">
+{% if token %}Regenerate Token{% else %}Generate API Token{% endif %}
+</button>
+</form>
+</div>
+
+{# ── Code examples card ── #}
+{% if token %}
+<div class="card">
+<h2>Usage examples</h2>
+<p style="color:var(--text-secondary);font-size:.82rem;margin-bottom:1rem">Replace <code>YOUR_TOKEN</code> with your actual token.</p>
+<label style="margin-bottom:.5rem">Python</label>
+<pre style="background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;padding:1rem;font-size:.8rem;overflow-x:auto;color:var(--accent-soft);margin-bottom:1.2rem">import requests
+
+VAULT = '{{ base }}/api/v1'
+TOKEN = 'YOUR_TOKEN'
+
+def get_secret(key, ns='default'):
+    r = requests.get(
+        f'{"{"}VAULT{"}"}/secret/{"{"}key{"}"}',
+        params={'ns': ns},
+        headers={'Authorization': f'Bearer {"{"}TOKEN{"}"}'}
+    )
+    return r.json()['value']
+
+api_key = get_secret('ANTHROPIC_API_KEY')
+stripe  = get_secret('STRIPE_KEY', ns='payments')</pre>
+<label style="margin-bottom:.5rem">curl</label>
+<pre style="background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;padding:1rem;font-size:.8rem;overflow-x:auto;color:var(--accent-soft);margin-bottom:1.2rem"># Get a single key
+curl {{ base }}/api/v1/secret/ANTHROPIC_API_KEY \
+     -H 'Authorization: Bearer YOUR_TOKEN'
+
+# From a specific namespace
+curl '{{ base }}/api/v1/secret/STRIPE_KEY?ns=payments' \
+     -H 'Authorization: Bearer YOUR_TOKEN'
+
+# List all keys
+curl {{ base }}/api/v1/secrets \
+     -H 'Authorization: Bearer YOUR_TOKEN'</pre>
+</div>
+{% endif %}
+
+{# ── Namespaces card ── #}
+<div class="card">
+<h2>Namespaces</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.2rem">Each namespace is a separate encrypted key store &mdash; same password, isolated secrets.</p>
+<table><thead><tr><th>Name</th><th>File</th><th>Action</th></tr></thead>
+<tbody>{{ ns_rows | safe }}</tbody></table>
+<a class="btn bg bs" href="/vault/new-ns" style="margin-top:1.2rem;display:inline-block">+ New Namespace</a>
+</div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault{% endblock %}
+{% block body %}
+<div class="cw"><div class="box">
+<h1>Jogi Vault</h1><p class="sub">Enter your credentials to unlock</p>
+{% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+<div class="card"><form method="post">
+{{ csrf_field() | safe }}
+<div class="fr"><label>Master password</label>
+<input type="password" name="password" autofocus placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
+<div class="fr"><label>Authenticator code <span style="color:var(--text-muted)">&mdash; or emergency key (EMRG-&hellip;)</span></label>
+<input type="text" name="code" maxlength="30" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit code" style="letter-spacing:.1em"></div>
+<button class="btn bp" style="width:100%;margin-top:.5rem">Unlock</button>
+</form></div>
+<p style="color:#555;font-size:.8rem;text-align:center;margin-top:1rem">Forgot password? Use your recovery key via CLI: <code style="color:var(--text-secondary)">make vault-forgot-password</code></p>
+</div></div>
+{% endblock %}

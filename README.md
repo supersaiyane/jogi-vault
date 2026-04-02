@@ -1,7 +1,7 @@
 # Jogi Vault
 
 A self-contained encrypted secret manager.
-Stores API keys and credentials in an AES-encrypted file — safe to commit to git.
+Stores API keys and credentials in an AES-256-GCM encrypted file — safe to commit to git.
 Exposes a web UI, a CLI, and a REST API so any language can read secrets without touching `.env` files.
 
 ---
@@ -10,7 +10,7 @@ Exposes a web UI, a CLI, and a REST API so any language can read secrets without
 
 | Feature | Description |
 |---|---|
-| AES-128 + HMAC-SHA256 | Authenticated encryption — tamper is detected automatically |
+| AES-256-GCM | Authenticated encryption — tamper is detected automatically |
 | PBKDF2-SHA256 | 480 000 iterations — brute-force resistant |
 | TOTP 2FA | YubiKey, Google Authenticator, Authy, 1Password, or any TOTP app |
 | Recovery key | `JOGI-…` resets master password if forgotten |
@@ -279,7 +279,7 @@ make delete-namespace P=xxx NS=payments
 # Password / 2FA
 make change-password             # prompts interactively
 make forgot-password             # reset with recovery key
-make save-password               # verify + save to ~/.zshrc
+make save-password               # verify + save to macOS Keychain
 make setup-totp   P=xxx
 make disable-totp P=xxx
 make new-emergency-key P=xxx
@@ -311,11 +311,12 @@ Vault corrupted     →  Restore from Google Drive backup (email-verified)
 
 | What gets stored | Where | Encrypted? |
 |---|---|---|
-| Secrets | `vault/data/vault.enc` | AES-128 + HMAC |
-| TOTP secret | `vault/data/vault.totp` | AES-128 |
-| Recovery bundle | `vault/data/vault.recovery` | AES-128 |
+| Secrets | `vault/data/vault.enc` | AES-256-GCM |
+| TOTP secret | `vault/data/vault.totp` | AES-256-GCM |
+| Recovery bundle | `vault/data/vault.recovery` | AES-256 (Fernet) |
 | Emergency key | `vault/data/vault.emergency` | PBKDF2 hash only |
-| Machine token bundle | `vault/data/vault.token` | AES-128 |
+| Machine token bundle | `vault/data/vault.token` | AES-256 (Fernet) |
+| Audit log | `vault/data/audit.log` | plaintext (append-only) |
 | Drive backup oauth | `vault/data/backup-oauth.json` | plaintext client creds |
 | Real password | nowhere | never stored |
 
@@ -332,6 +333,7 @@ Vault corrupted     →  Restore from Google Drive backup (email-verified)
 | `vault/data/vault.emergency` | ✅ hash only |
 | `vault/data/vault.token` | ✅ encrypted |
 | `vault/data/backup-oauth.json` | ✅ not sensitive |
+| `vault/data/audit.log` | ✅ no secrets logged |
 | `VAULT_PASSWORD` / real password | ❌ never |
 | Recovery key plaintext | ❌ store in password manager |
 | Emergency key plaintext | ❌ store in password manager |

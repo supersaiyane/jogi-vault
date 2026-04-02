@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; Machine Token{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="cw" style="min-height:calc(100vh - 56px)"><div class="box wide">
+<div class="card">
+<h2 style="color:var(--yellow)">Your machine token &mdash; shown once</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin:1rem 0">This token hides your real password. Use it everywhere you would have used <code>VAULT_PASSWORD=yourpassword</code>. Store it securely &mdash; it will not be shown again.</p>
+<div class="kb" style="font-size:.78rem;letter-spacing:.03em;word-break:break-all">{{ token }}</div>
+<div style="background:#13131f;border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-top:1.2rem">
+<p style="color:var(--accent);font-size:.8rem;font-weight:600;margin-bottom:.6rem">Usage examples</p>
+<p style="color:#555;font-size:.78rem;margin-bottom:.35rem">docker-compose.yml / .env</p>
+<pre style="color:var(--accent-soft);font-size:.8rem">VAULT_PASSWORD={{ token }}</pre>
+<p style="color:#555;font-size:.78rem;margin:.6rem 0 .35rem">Shell</p>
+<pre style="color:var(--accent-soft);font-size:.8rem">export VAULT_PASSWORD={{ token }}</pre>
+<p style="color:#555;font-size:.78rem;margin:.6rem 0 .35rem">Python</p>
+<pre style="color:var(--accent-soft);font-size:.8rem">from src.vault import Vault
+vault = Vault(password='{{ token }}')</pre>
+</div>
+<p class="hint" style="margin-top:.8rem">Your real password is never stored. Rotating or revoking this token instantly blocks all automated access.</p>
+<form method="post" style="margin-top:1.5rem">
+{{ csrf_field() | safe }}
+<button class="btn bp" style="width:100%">I have saved it &mdash; go to API settings</button>
+</form></div></div></div>
+{% endblock %}

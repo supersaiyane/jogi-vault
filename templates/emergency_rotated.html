@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="cw" style="min-height:calc(100vh - 56px)"><div class="box wide">
+<div class="card">
+<h2 style="color:var(--yellow)">Emergency key used &mdash; here is your new one</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin:1rem 0">Your old key has been consumed. Save this new one immediately.</p>
+<div class="kb" style="border-color:var(--red)">{{ new_key }}</div>
+<p class="hint">This key grants a one-time TOTP bypass. Keep it safe.</p>
+<a href="/vault" class="btn bp" style="display:block;text-align:center;margin-top:1.5rem">I have saved it &mdash; continue to vault</a>
+</div></div></div>
+{% endblock %}

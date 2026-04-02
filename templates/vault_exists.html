@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; Already set up{% endblock %}
+{% block body %}
+<div class="cw"><div class="box" style="text-align:center">
+<div style="width:72px;height:72px;margin:0 auto 1.5rem;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;border:1px solid var(--green-border)">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+<polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+<h1 style="font-size:1.8rem;color:var(--accent);margin-bottom:.5rem">Vault already exists</h1>
+<p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:2rem;line-height:1.6">A vault is already configured on this machine.<br>Login with your master password to access it.</p>
+<a href="/login" class="btn bp" style="display:flex;justify-content:center;margin-bottom:.8rem">Go to Login &rarr;</a>
+<p style="color:var(--text-muted);font-size:.78rem;margin-top:1.2rem">Want to start fresh? Delete <code style="color:var(--text-secondary)">vault/data/</code> files and restart.</p>
+</div></div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; {{ code }}{% endblock %}
+{% block body %}
+<div class="cw"><div class="box" style="text-align:center">
+<div style="width:72px;height:72px;margin:0 auto 1.5rem;border-radius:50%;background:var(--accent-glow);display:flex;align-items:center;justify-content:center">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+<h1 style="font-size:2rem;color:var(--accent);margin-bottom:.5rem;letter-spacing:-.02em">{{ headline }}</h1>
+<p style="color:var(--text-secondary);font-size:.92rem;margin-bottom:2rem;line-height:1.7">{{ body_text | safe }}</p>
+<div style="display:flex;gap:.8rem;justify-content:center">
+<a href="/login" class="btn bp">Back to Vault</a>
+<a href="/" class="btn bg">Home</a>
+</div></div></div>
+{% endblock %}

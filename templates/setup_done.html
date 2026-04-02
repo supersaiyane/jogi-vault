@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault{% endblock %}
+{% block body %}
+<div class="cw"><div class="box wide">
+<h1>Jogi Vault</h1><p class="sub">First time setup &mdash; step 3 of 3</p>
+<div class="steps"><div class="step done"></div><div class="step done"></div><div class="step act"></div></div>
+<div class="card">
+<h2 style="color:var(--yellow)">Save these keys &mdash; shown only once</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.4rem">Store both in a password manager, secure notes, or print them out.</p>
+<label>Recovery Key <span style="color:var(--text-muted)">&mdash; resets your password if forgotten</span></label>
+<div class="kb">{{ recovery }}</div>
+<label style="margin-top:1.2rem;display:block">Emergency Key <span style="color:var(--text-muted)">&mdash; one-time TOTP bypass if you lose your authenticator</span></label>
+<div class="kb" style="border-color:var(--red)">{{ emergency }}</div>
+<p class="hint">Emergency key regenerates after each use.</p>
+<form method="post" style="margin-top:1.5rem">
+{{ csrf_field() | safe }}
+<button class="btn bp" style="width:100%">I have saved both keys &mdash; Enter the vault</button>
+</form></div></div></div>
+{% endblock %}

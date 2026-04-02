@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; Restore{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="cw" style="min-height:calc(100vh - 56px)"><div class="box">
+{% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+<div class="card">
+<h2 style="color:var(--yellow)">Verify before restore</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.4rem">We will send a 6-digit code to your configured email to confirm this restore.</p>
+<form method="post" action="/backup/restore-send">
+{{ csrf_field() | safe }}
+<div class="fr"><label>Send code to email</label>
+<input type="text" name="email" value="{{ email }}" placeholder="you@gmail.com" autofocus></div>
+<div style="display:flex;gap:.8rem;margin-top:.5rem">
+<button class="btn bp">Send Code</button>
+<a class="btn bg" href="/backup">Cancel</a>
+</div></form>
+</div></div></div>
+{% endblock %}

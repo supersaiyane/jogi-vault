@@ -1,0 +1,68 @@
+# =============================================================
+# JOGI VAULT — Standalone Docker Compose
+# =============================================================
+#
+# Use this file to run the vault independently, without the
+# full jogi-explains pipeline. Perfect for:
+#   - Managing secrets from any project
+#   - Running vault on a separate machine / server
+#   - Development and testing
+#
+# QUICK START:
+#   cd vault/
+#   docker-compose up -d
+#   open http://localhost:5111
+#
+# FIRST TIME:
+#   1. Open http://localhost:5111
+#   2. Setup wizard: password → TOTP → save keys
+#   3. Generate machine token: API tab → Generate Machine Token
+#   4. Create .env file (see below)
+#   5. Restart: docker-compose down && docker-compose up -d
+#
+# COMMANDS:
+#   docker-compose up -d              # start (detached)
+#   docker-compose up --build -d      # rebuild + start
+#   docker-compose logs -f            # live logs
+#   docker-compose stop               # stop
+#   docker-compose down               # stop + remove containers
+#   docker-compose down -v            # stop + remove volumes (DATA LOSS!)
+#
+# .env FILE (create in vault/ next to this file):
+#   VAULT_PASSWORD=VLT-xxxxxxxxxxx    # machine token from API tab
+#   VAULT_UI_PORT=5111                # optional, change port
+#
+# =============================================================
+
+services:
+
+  # -----------------------------------------------------------
+  # Vault UI + REST API
+  # http://localhost:5111
+  # -----------------------------------------------------------
+  vault:
+    build:
+      context: ..
+      dockerfile: vault/Dockerfile
+    image: jogi-vault
+    container_name: jogi-vault
+    restart: unless-stopped
+    ports:
+      - "${VAULT_UI_PORT:-5111}:5111"
+    volumes:
+      - ./data:/app/vault/data
+    environment:
+      - VAULT_UI_PORT=5111
+      - VAULT_PASSWORD=${VAULT_PASSWORD:-}
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:5111')"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 8s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"

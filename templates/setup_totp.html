@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault{% endblock %}
+{% block body %}
+<div class="cw"><div class="box wide">
+<h1>Jogi Vault</h1><p class="sub">First time setup &mdash; step 2 of 3</p>
+<div class="steps"><div class="step done"></div><div class="step act"></div><div class="step"></div></div>
+<div class="card"><h2>Scan with your Authenticator</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1rem">Works with YubiKey, Google Authenticator, Microsoft Authenticator, Authy, 1Password, or any TOTP app.</p>
+<div class="qw">{{ qr_img | safe }}</div>
+<p style="color:var(--text-muted);font-size:.75rem;word-break:break-all;margin-bottom:1rem">{{ uri }}</p>
+{% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+<form method="post">
+{{ csrf_field() | safe }}
+<div class="fr"><label>Enter the 6-digit code to confirm</label>
+<input type="text" name="code" autofocus maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="000000" class="ci"></div>
+<button class="btn bp" style="width:100%;margin-top:.5rem">Verify &amp; Continue &rarr;</button>
+</form></div></div></div>
+{% endblock %}

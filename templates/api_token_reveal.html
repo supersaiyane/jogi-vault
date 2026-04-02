@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault &mdash; API Token{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="cw" style="min-height:calc(100vh - 56px)"><div class="box wide">
+<div class="card">
+<h2 style="color:var(--yellow)">Your API token &mdash; shown once</h2>
+<p style="color:var(--text-secondary);font-size:.88rem;margin:1rem 0">Copy and store this token securely. It will not be shown again in full.</p>
+<div class="kb" style="font-size:.85rem;letter-spacing:.05em;word-break:break-all">{{ token }}</div>
+<p class="hint">Pass it as <code>Authorization: Bearer &lt;token&gt;</code> in API requests.</p>
+<form method="post" style="margin-top:1.5rem">
+{{ csrf_field() | safe }}
+<button class="btn bp" style="width:100%">I have saved it &mdash; go to API settings</button>
+</form></div></div></div>
+{% endblock %}

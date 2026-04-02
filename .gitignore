@@ -1,3 +1,8 @@
+# Vault data — encrypted files, tokens, audit log
+# These are machine-specific and should NOT be shared via git.
+# Each machine generates its own salt, keys, and tokens.
+data/
+
 # Python
 __pycache__/
 *.pyc

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Jogi Vault{% endblock %}
+{% block body %}
+{% include "nav.html" %}
+<div class="page">
+<div class="topbar"><h1>New Namespace</h1>
+<a class="btn bg bs" href="/vault">&#8592; Back</a></div>
+{% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+<div class="card">
+<p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.2rem">A namespace is a separate encrypted store &mdash; same password, isolated keys.<br>Use it to separate keys by project, environment, or team.</p>
+<form method="post">
+{{ csrf_field() | safe }}
+<div class="fr"><label>Namespace name <span style="color:var(--text-muted)">(lowercase, hyphens ok)</span></label>
+<input type="text" name="name" autofocus placeholder="my-project"></div>
+<div style="display:flex;gap:.8rem">
+<button class="btn bp">Create</button>
+<a class="btn bg" href="/vault">Cancel</a>
+</div></form></div></div>
+{% endblock %}
